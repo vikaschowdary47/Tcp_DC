@@ -38,9 +38,22 @@ public class TestClient1 {
     }
 
     public static void main(String[] args) throws IOException {
-    	TestClient1 client = new TestClient1("localhost", 9999);
-//    	  BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//          PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+//    	TestClient1 client = new TestClient1("localhost", 9999);
+//        client.start();
+    	
+    	if (args.length != 2) {
+            System.err.println("Usage: java TestClient1 <IP Address> <Port>");
+            System.exit(1);
+        }
+
+        String ipAddress = args[0];
+        int port = Integer.parseInt(args[1]);
+
+        
+    	System.out.println("ipAddress >> " + args[0]);
+    	System.out.println("Port >> "+ args[1]);
+    	
+        TestClient1 client = new TestClient1(ipAddress, port);
         client.start();
     }
 }

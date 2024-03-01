@@ -11,14 +11,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FileDistributorServer {
-    private static final int PORT = 9999;
+//    private static final int PORT = 9999;
     private List<Socket> clientSockets = new ArrayList<>();
     private ServerSocket serverSocket;
     private int noOfClients = 5;
 
-    public FileDistributorServer() throws IOException {
-        serverSocket = new ServerSocket(PORT);
-        System.out.println("Server started on port " + PORT);
+    public FileDistributorServer(int port) throws IOException {
+        serverSocket = new ServerSocket(port);
+        System.out.println("Server started on port " + port);
     }
 
     public void acceptClients() throws IOException {
@@ -30,41 +30,6 @@ public class FileDistributorServer {
     }
     
     
-//    public void distributeFileAndCollectCounts(String filePath) throws IOException {
-//        // Split file into parts
-//        List<String> fileParts = splitFileIntoParts(filePath, noOfClients);
-//        
-//        ExecutorService executor = Executors.newFixedThreadPool(noOfClients);
-//        
-//        int totalWordCount = 0; // Variable to store the total word count received from all clients
-//
-//        // Send each part to a different client
-//        for (int i = 0; i < clientSockets.size(); i++) {
-//            PrintWriter out = new PrintWriter(clientSockets.get(i).getOutputStream(), true);
-//            for (String line : fileParts.get(i).split("\n")) {
-//                out.println(line); // Send each line of the file part to client
-//            }
-//            out.println("@@@END_OF_PART@@@"); // indicate end of file part
-//        }
-//
-//        // Collect word counts from clients
-//        for (Socket socket : clientSockets) {
-//            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            String countStr = in.readLine(); // Read word count from client
-//            int count = Integer.parseInt(countStr);
-//            totalWordCount += count; // Increment total word count
-//            System.out.println("Client's word count: " + count);
-//            in.close(); // close reader
-//        }
-//
-//        System.out.println("Total word count received from all clients: " + totalWordCount);
-//
-//        // Close all client sockets and the server socket
-//        for (Socket socket : clientSockets) {
-//            socket.close();
-//        }
-//        serverSocket.close();
-//    }
 
     public void distributeFileAndCollectCounts(String filePath) throws IOException, InterruptedException {
         // Split file into parts
@@ -148,13 +113,22 @@ public class FileDistributorServer {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
+    	
+    	if (args.length != 2) {
+            System.err.println("Usage: java FileDistributorServer <Port> <File Path>");
+            System.exit(1);
+        }
+    	
+    	int port = Integer.parseInt(args[0]);
+    	String filePath = args[1];
+    	
         long start, end, executionTime;
         
-        FileDistributorServer server = new FileDistributorServer();
+        FileDistributorServer server = new FileDistributorServer(port);
         server.acceptClients(); // Wait for clients to connect before measuring time
 
         start = System.currentTimeMillis(); // Start time after clients have connected
-        server.distributeFileAndCollectCounts("/Users/vikas/Desktop/long_job.txt");
+        server.distributeFileAndCollectCounts(filePath);
         end = System.currentTimeMillis(); // End time after file distribution and word counting
 
         executionTime = end - start; // Calculate execution time

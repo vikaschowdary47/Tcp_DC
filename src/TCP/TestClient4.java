@@ -22,7 +22,7 @@ public class TestClient4 {
             }
             String filePart = filePartBuilder.toString();
             int wordCount = countWords(filePart);
-            
+           
             out.println(wordCount); // Send word count back to the server
             out.close(); // close output stream
             socket.close();
@@ -38,9 +38,22 @@ public class TestClient4 {
     }
 
     public static void main(String[] args) throws IOException {
-    	TestClient4 client = new TestClient4("localhost", 9999);
-//    	  BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//          PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+//    	TestClient3 client = new TestClient3("localhost", 9999);
+//        client.start();
+    	
+    	if (args.length != 2) {
+            System.err.println("Usage: java TestClient3 <IP Address> <Port>");
+            System.exit(1);
+        }
+
+        String ipAddress = args[0];
+        int port = Integer.parseInt(args[1]);
+
+        
+    	System.out.println("ipAddress >> " + args[0]);
+    	System.out.println("Port >> "+ args[1]);
+    	
+        TestClient4 client = new TestClient4(ipAddress, port);
         client.start();
     }
 }
